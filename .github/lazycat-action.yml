@@ -10,7 +10,7 @@ update:
   allow_downgrade: false
   version_source:
     type: image
-    image: bitmagnet
+    image: openemr
 build:
   toolchains:
     - kind: docker

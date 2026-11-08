@@ -1,71 +1,62 @@
 application:
-  subdomain: bitmagnet
+  subdomain: openemr
   multi_instance: false
-  # 应用自身无账号体系（bitmagnet 是无鉴权的本地索引服务），
-  # 参照 blocky/shimmy 判例：不加 public_path，仅由平台入口鉴权防护。
+  # 应用首启由容器自动完成安装（MANUAL_SETUP=no），初始管理员账号为 admin +
+  # 部署参数里预置的随机密码（oe_admin），无自助注册入口；
+  # 参照 part-db 判例：不加 public_path，由平台入口鉴权防护，登录后请立即改密。
   upstreams:
     - location: /package-licenses/
       backend: file:///lzcapp/pkg/content/licenses/
     - location: /
-      backend: http://bitmagnet:3333/
-  ingress:
-    - protocol: tcp
-      port: 3334
-      service: bitmagnet
-    - protocol: udp
-      port: 3334
-      service: bitmagnet
+      backend: http://openemr:80/
 
 services:
-  bitmagnet:
-    # upstream: ghcr.io/bitmagnet-io/bitmagnet:v0.10.1
-    image: ghcr.1ms.run/bitmagnet-io/bitmagnet:v0.10.1
-    command:
-      - worker
-      - run
-      - --all
+  openemr:
+    # upstream: docker.io/openemr/openemr:8.5.0
+    image: docker.1ms.run/openemr/openemr:8.5.0
     environment:
       - TZ=Asia/Shanghai
-      - TMPDIR=/app/temp
-      - POSTGRES_HOST=bitmagnet-db
-      - POSTGRES_PORT=5432
-      - POSTGRES_DB=bitmagnet
-      - POSTGRES_USER=bitmagnet
-      - POSTGRES_PASSWORD={{PASSWORD_bm_db_pw}}
-      - JWT_SECRET={{PASSWORD_bm_jwt}}
-      - HTTP_SERVER_PORT=3333
-      - QUEUE_COMPACTION_INTERVAL_SECONDS=30
+      - MYSQL_HOST=openemr-db
+      - MYSQL_PORT=3306
+      - MYSQL_ROOT_PASS={{PASSWORD_oe_db_root}}
+      - MYSQL_USER=openemr
+      - MYSQL_PASS={{PASSWORD_oe_db}}
+      - MYSQL_DATABASE=openemr
+      - OE_USER=admin
+      - OE_PASS={{PASSWORD_oe_admin}}
     binds:
-      - /lzcapp/var/data:/app/data
-      - /lzcapp/var/downloads:/app/downloads
+      - /lzcapp/var/data:/var/www/localhost/htdocs/openemr/sites
     depends_on:
-      - bitmagnet-db
-  bitmagnet-db:
-    # upstream: library/postgres:16.9
-    image: docker.1ms.run/library/postgres:16.9
+      - openemr-db
+  openemr-db:
+    # upstream: library/mariadb:12.3.3
+    image: docker.1ms.run/library/mariadb:12.3.3
+    command: ["mariadbd", "--character-set-server=utf8mb4"]
     environment:
-      - POSTGRES_USER=bitmagnet
-      - POSTGRES_PASSWORD={{PASSWORD_bm_db_pw}}
-      - POSTGRES_DB=bitmagnet
       - TZ=Asia/Shanghai
+      - MARIADB_ROOT_PASSWORD={{PASSWORD_oe_db_root}}
+      - MARIADB_AUTO_UPGRADE=1
     binds:
-      - /lzcapp/var/db:/var/lib/postgresql/data
+      - /lzcapp/var/db:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d bitmagnet -U bitmagnet"]
-      interval: 10s
-      timeout: 5s
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 30s
+      timeout: 10s
       retries: 5
+      start_period: 1m
 
 usage: |
-  Bitmagnet 是一个自托管的 BitTorrent 索引器、DHT 爬虫与种子搜索引擎，
-  可对 DHT 网络中的种子信息进行爬取、元数据增强，并提供本地搜索界面。
+  OpenEMR 是全球广泛使用的开源电子病历（EHR）与门诊管理系统，
+  提供患者档案、预约、处方、计费与报表等功能。
 
   使用方法：
-  1. 打开应用即可使用搜索界面；系统无账号体系，请勿将其对外开放给
-     不可信网络（本包由平台入口鉴权统一防护）。
-  2. DHT 爬虫通过 3334 端口（TCP/UDP）参与网络，平台已自动转发。
-  3. 数据存放在 /lzcapp/var/data，下载的种子元数据存放在 /lzcapp/var/downloads。
+  1. 安装后首次启动会自动完成数据库初始化与应用安装（约需几分钟），
+     请耐心等待服务就绪后再访问。
+  2. 初始管理员账号：admin，密码为部署参数「管理员密码」中预置的随机值，
+     请在应用内立即修改为自己的密码。
+  3. 数据库与应用数据分别存放在 /lzcapp/var/db 与 /lzcapp/var/data，
+     升级前请做好备份。
 
   说明：
-  - 本包未做实机验证，功能以官方文档为准：https://bitmagnet.io/
-  - 许可为 MIT，全文随包附带，见 /package-licenses/。
+  - 本包未做实机验证，功能以官方文档为准：https://www.open-emr.org/wiki/
+  - 许可为 GPL-3.0，全文随包附带，见 /package-licenses/。

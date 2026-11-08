@@ -1,29 +1,41 @@
 params:
-  - id: bm_db_pw
+  - id: oe_db_root
+    type: secret
+    name: "数据库 root 密码"
+    description: "MariaDB root 密码（已预置随机值，应用自动使用）"
+    default_value: "tR4wVe8mQx1pLzK6"
+    optional: false
+  - id: oe_db
     type: secret
     name: "数据库密码"
-    description: "PostgreSQL 数据库密码（已预置随机值，应用自动使用）"
-    default_value: "tR7wKe2mPa9xQz4b"
+    description: "OpenEMR 业务数据库密码（已预置随机值，应用自动使用）"
+    default_value: "hJ9cNu3aBw5sYe2f"
     optional: false
-  - id: bm_jwt
+  - id: oe_admin
     type: secret
-    name: "JWT 密钥"
-    description: "应用内部 JWT 签名密钥（已预置随机值，无需修改）"
-    default_value: "uW3nEs8cRt5yHk2m"
+    name: "管理员密码"
+    description: "OpenEMR 初始管理员 admin 的登录密码（已预置随机值，安装后可在应用内修改）"
+    default_value: "qW7kXb0eMz4tRv8j"
     optional: false
 
 locales:
   zh:
-    bm_db_pw:
+    oe_db_root:
+      name: "数据库 root 密码"
+      description: "MariaDB root 密码（已预置随机值，应用自动使用）"
+    oe_db:
       name: "数据库密码"
-      description: "PostgreSQL 数据库密码（已预置随机值，应用自动使用）"
-    bm_jwt:
-      name: "JWT 密钥"
-      description: "应用内部 JWT 签名密钥（已预置随机值，无需修改）"
+      description: "OpenEMR 业务数据库密码（已预置随机值，应用自动使用）"
+    oe_admin:
+      name: "管理员密码"
+      description: "OpenEMR 初始管理员 admin 的登录密码（已预置随机值，安装后可在应用内修改）"
   en:
-    bm_db_pw:
+    oe_db_root:
+      name: "Database root password"
+      description: "MariaDB root password (pre-filled with a random value, used automatically)"
+    oe_db:
       name: "Database password"
-      description: "PostgreSQL password (pre-filled with a random value, used automatically)"
-    bm_jwt:
-      name: "JWT password"
-      description: "Internal JWT signing password (pre-filled with a random value, no need to change)"
+      description: "OpenEMR application database password (pre-filled with a random value, used automatically)"
+    oe_admin:
+      name: "Admin password"
+      description: "Login password for the initial admin account (pre-filled random value, changeable in the app after setup)"

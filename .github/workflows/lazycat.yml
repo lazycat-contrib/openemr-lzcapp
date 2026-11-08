@@ -1,11 +1,11 @@
-name: Build Pretix LPK
+name: Build OpenEMR LPK
 on:
   workflow_dispatch:
 permissions:
   contents: write
   pull-requests: write
 concurrency:
-  group: pretix-lpk
+  group: openemr-lpk
   cancel-in-progress: false
 jobs:
   lazycat:

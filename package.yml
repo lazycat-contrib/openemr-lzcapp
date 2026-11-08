@@ -1,18 +1,18 @@
-package: community.lazycat.app.bitmagnet
-name: Bitmagnet
-version: 0.10.1
-description: "Self-hosted BitTorrent indexer, DHT crawler and torrent search engine."
+package: community.lazycat.app.openemr
+name: OpenEMR
+version: 8.5.0
+description: "Open-source electronic health records and medical practice management system."
 min_os_version: "1.5.0"
-homepage: https://bitmagnet.io
-author: bitmagnet-io
-license: MIT
+homepage: https://www.open-emr.org/
+author: OpenEMR
+license: GPL-3.0
 permissions:
   required:
     - net.internet
 locales:
   zh:
-    name: Bitmagnet
-    description: "自托管的 BitTorrent 索引器、DHT 爬虫与种子搜索引擎。"
+    name: OpenEMR
+    description: "开源电子病历（EHR）与门诊管理系统，支持患者档案、预约、处方与计费。"
   en:
-    name: Bitmagnet
-    description: "Self-hosted BitTorrent indexer, DHT crawler and torrent search engine."
+    name: OpenEMR
+    description: "Open-source electronic health records and medical practice management system."
