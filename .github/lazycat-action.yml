@@ -11,6 +11,10 @@ update:
   version_source:
     type: image
     image: openemr
+build:
+  toolchains:
+    - kind: docker
+  run_buildscript: false
 images:
   - id: openemr
     target: service
