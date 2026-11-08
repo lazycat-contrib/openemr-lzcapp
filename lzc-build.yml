@@ -2,26 +2,3 @@ manifest: ./lzc-manifest.yml
 pkgout: ./dist
 icon: ./icon.png
 contentdir: ./content
-images:
-  - id: openemr
-    target: service
-    service: openemr
-    source: openemr/openemr
-    channel: stable
-    sort: semver
-    tag_regex: ^v?[0-9]+[.][0-9]+[.][0-9]+$
-    delivery:
-      mode: mirror
-      require_digest_match: true
-  - id: mariadb
-    target: service
-    service: openemr-db
-    source: library/mariadb
-    channel: custom
-    sort: semver
-    tag_regex: ^12[.][0-9]+[.][0-9]+$
-    version_regex: ^(?P<version>12[.][0-9]+[.][0-9]+)$
-    version_template: "{version}"
-    delivery:
-      mode: mirror
-      require_digest_match: true
