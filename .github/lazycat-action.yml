@@ -16,27 +16,26 @@ build:
     - kind: docker
   run_buildscript: false
 images:
-  # ghcr image: source must be the full path (watcharr precedent)
-  - id: bitmagnet
+  - id: openemr
     target: service
-    service: bitmagnet
-    source: ghcr.io/bitmagnet-io/bitmagnet
+    service: openemr
+    source: openemr/openemr
     channel: stable
     sort: semver
     tag_regex: ^v?[0-9]+[.][0-9]+[.][0-9]+$
     delivery:
       mode: mirror
       require_digest_match: true
-  # postgres 16.x tags are two-segment (16.9): custom + version_regex + template pads to three
-  - id: postgres
+  # mariadb 12.x is three-segment (12.3.3): custom channel locks the major line
+  - id: mariadb
     target: service
-    service: bitmagnet-db
-    source: library/postgres
+    service: openemr-db
+    source: library/mariadb
     channel: custom
     sort: semver
-    tag_regex: ^16[.][0-9]+$
-    version_regex: ^(?P<version>16[.][0-9]+)$
-    version_template: "{version}.0"
+    tag_regex: ^12[.][0-9]+[.][0-9]+$
+    version_regex: ^(?P<version>12[.][0-9]+[.][0-9]+)$
+    version_template: "{version}"
     delivery:
       mode: mirror
       require_digest_match: true
@@ -48,5 +47,5 @@ stores:
     enabled: false
   private:
     enabled: false
-    name: bitmagnet
+    name: openemr
     skip_if_version_exists: true
