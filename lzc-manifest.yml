@@ -9,11 +9,10 @@ application:
       backend: file:///lzcapp/pkg/content/licenses/
     - location: /
       backend: http://openemr:80/
-
 services:
   openemr:
-    # upstream: docker.io/openemr/openemr:8.5.0
-    image: docker.1ms.run/openemr/openemr:8.5.0
+    # upstream: openemr/openemr:8.6.0
+    image: docker.1ms.run/openemr/openemr:8.6.0
     environment:
       - TZ=Asia/Shanghai
       - MYSQL_HOST=openemr-db
@@ -44,7 +43,6 @@ services:
       timeout: 10s
       retries: 5
       start_period: 1m
-
 usage: |
   OpenEMR 是全球广泛使用的开源电子病历（EHR）与门诊管理系统，
   提供患者档案、预约、处方、计费与报表等功能。
